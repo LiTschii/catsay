@@ -16,6 +16,7 @@ func buildCat(fat int) string {
 		fat = 1
 	}
 	p := strings.Repeat(" ", (fat-1)*2) // padding per side
+	u := strings.Repeat("_", (fat-1)*2) // underscore padding for feet
 
 	return fmt.Sprintf(
 		"\n"+
@@ -24,13 +25,14 @@ func buildCat(fat int) string {
 			"  ( ==%s  ^  ==%s )\n"+
 			"   )%s         %s(\n"+
 			"  (%s           %s)\n"+
-			" ( (%s )   ( %s) )\n"+
-			"(__(__)___(__)__)\n",
+			" ( (%s__)   (__%s) )\n"+
+			"(__(__)%s___(__)%s__)\n",
 		p,
 		p, p,
 		p, p,
 		p, p,
 		p, p,
+		u, u,
 	)
 }
 

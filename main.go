@@ -58,28 +58,60 @@ func buildBubble(lines []string) string {
 	return sb.String()
 }
 
+func usage() {
+	fmt.Fprintln(os.Stderr, "Usage: catsay [-s|--string \"text\"] [file ...]")
+	fmt.Fprintln(os.Stderr, "       echo text | catsay")
+	os.Exit(1)
+}
+
 func main() {
 	var lines []string
 	wrap := 60
 
 	args := os.Args[1:]
-	if len(args) == 0 {
-		scanner := bufio.NewScanner(os.Stdin)
+
+	// parse flags
+	var fileArgs []string
+	for i := 0; i < len(args); i++ {
+		switch args[i] {
+		case "-s", "--string":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "catsay: -s requires an argument")
+				usage()
+			}
+			i++
+			lines = append(lines, strings.Split(args[i], "\n")...)
+		case "-h", "--help":
+			usage()
+		default:
+			fileArgs = append(fileArgs, args[i])
+		}
+	}
+
+	// read files if any were given
+	for _, arg := range fileArgs {
+		f, err := os.Open(arg)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "catsay: %s: %v\n", arg, err)
+			continue
+		}
+		scanner := bufio.NewScanner(f)
 		for scanner.Scan() {
 			lines = append(lines, scanner.Text())
 		}
-	} else {
-		for _, arg := range args {
-			f, err := os.Open(arg)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "catsay: %s: %v\n", arg, err)
-				continue
-			}
-			scanner := bufio.NewScanner(f)
-			for scanner.Scan() {
-				lines = append(lines, scanner.Text())
-			}
-			f.Close()
+		f.Close()
+	}
+
+	// no args at all: print usage (don't block on stdin)
+	if len(os.Args) == 1 {
+		usage()
+	}
+
+	// no content from flags/files but stdin was piped
+	if len(lines) == 0 && len(fileArgs) == 0 {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			lines = append(lines, scanner.Text())
 		}
 	}
 

@@ -60,7 +60,7 @@ go install github.com/LiTLiTschi/catsay@latest
 falls back to stdin just like `cat` does, so aliasing it is safe in interactive shells.
 The upside: every time you inspect a config file, a log, or a script, you get immediate visual
 confirmation that the output belongs to a single command invocation, which is useful when
-your terminal history is cluttered or you’re piping output from multiple sources.
+your terminal history is cluttered or you're piping output from multiple sources.
 
 Add to your `~/.bashrc` or `~/.zshrc`:
 
@@ -157,68 +157,6 @@ The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere
 | Install | package manager | one `curl` or `wget` command |
 | IP concerns | none | [see FAQ](#faq) |
 
-## Roadmap — `grepfield`
-
-The next tool in this suite is `grepfield`: a calmer, more considered alternative to `grep`.
-
-```
-            __ \/ __
-     /\^/`\          /o \{}/ o\   
-    | \/   |         \   ()   /   
-    | |    |          `> /\ <`   ,,,  
-    \ \    /  @@@@    (o/\/\o)  {{{}}
-     '\\//'  @@()@@  _ )    (    ~Y~       @@@@
-       ||     @@@@ _(_)_   wWWWw .oOOo.   @@()@@
-       ||     ,/  (_)@(_)  (___) OO()OO    @@@@
-       ||  ,\ | /)  (_)\     Y   'OOOO',,,( \|/
-   |\  ||  |\\|// vVVVv`|/@@@@    _ \/{{}}}\|
-   | | ||  | |;,,,(___) |@@()@@ _(_)_| ~Y~ wWWWw
-   | | || / / {{}}} Y  \| @@@@ (_)#(_) \|  (___)
-    \ \||/ /\\|~Y~ \|/  | \ \/  /(_) |/ |/   Y
-jgs\ `\\//`,.\|/|//.|/\\|/\\|,\|/ //\|/\|.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-```
-
-*ASCII art by jgs, original at [asciiart.eu](https://www.asciiart.eu/art/d9c8fc04295a9c29).*
-
-### What is `grepfield`?
-
-`grep` is a precise and unforgiving tool. It returns matches as raw lines, dense and
-clinical, with no spatial context beyond line numbers. This is appropriate for
-automated pipelines. It is less appropriate for a human who is trying to understand
-an unfamiliar codebase at 11pm.
-
-`grepfield` wraps `grep` output in a rendered scene — each match floats above the
-meadow as a speech bubble, surfaced one at a time or paginated, with the surrounding
-lines of context presented in a way that does not feel like a stack trace.
-
-The name reflects the core operation: `grep` searches *fields* of text — bounded,
-structured regions of data. This is standard terminology in text processing; `awk`
-has called columns "fields" since 1977. The rendered meadow scene is a visual
-representation of that concept. It is a field. You are grepping it. The name is
-literal.
-
-### Planned features
-
-| Feature | Description |
-|---|---|
-| Pattern matching | Full `grep`-compatible regex via Go's `regexp` package |
-| Context lines | `-C N` shows N lines above and below each match, framed in the scene |
-| File traversal | `-r` for recursive directory search, same as `grep -r` |
-| Match highlighting | Matched portion rendered in the speech bubble, surrounding context in the grass |
-| Pagination | Long result sets paginated with a quiet prompt, not dumped all at once |
-| Stdin support | Pipe into `grepfield` just like `grep` |
-| Color output | Optional — off by default, because the field is already colorful enough |
-
-### Milestone plan
-
-- **v0.1** — Core: pattern matching on files, single match per bubble, meadow renders below
-- **v0.2** — Context lines (`-C`), multiple files, recursive search (`-r`)
-- **v0.3** — Pagination, stdin support, `-i` case-insensitive flag
-- **v1.0** — Full `grep` flag parity for common use cases, stable meadow geometry
-
-> Contributions welcome. The field accepts all kinds.
-
 ## FAQ
 
 **Q: Does the cat look like Garfield?**
@@ -278,6 +216,12 @@ in order to distance it from any specific cultural reference are welcome via Git
 issues, but should be accompanied by a concrete ASCII art alternative that still
 reads unambiguously as a cat at default terminal font sizes. This is harder than it
 sounds.
+
+---
+
+**Q: Are there plans for other tools?**
+
+Yes. The next tool is `grepfield`.
 
 ---
 

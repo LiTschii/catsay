@@ -6,15 +6,6 @@ $ErrorActionPreference = 'Stop'
 $Repo = 'LiTLiTschi/catsay'
 $Bin  = 'catsay.exe'
 
-# detect arch
-$Arch = if ([System.Environment]::Is64BitOperatingSystem) {
-  if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'amd64' }
-} else {
-  Write-Error 'Only 64-bit Windows is supported.'; exit 1
-}
-
-$AssetName = "catsay-windows-$Arch.exe"
-
 # resolve install dir
 $InstallDir = "$env:LOCALAPPDATA\Programs\catsay"
 if (-not (Test-Path $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir | Out-Null }
@@ -36,17 +27,17 @@ if (-not $Tag) {
   exit 1
 }
 
-# check if the windows binary asset exists in this release
-$Asset = $Release.assets | Where-Object { $_.name -eq $AssetName } | Select-Object -First 1
+# look for catsay.exe asset
+$Asset = $Release.assets | Where-Object { $_.name -eq $Bin } | Select-Object -First 1
 
 if ($Asset) {
   $Url  = $Asset.browser_download_url
   $Dest = Join-Path $InstallDir $Bin
-  Write-Host "Downloading catsay $Tag ($Arch)..."
+  Write-Host "Downloading catsay $Tag..."
   Invoke-WebRequest -Uri $Url -OutFile $Dest -UseBasicParsing
   Write-Host "Installed -> $Dest"
 } else {
-  Write-Host "No prebuilt binary found for $Tag ($Arch). Falling back to go install..."
+  Write-Host "No prebuilt binary found for $Tag. Falling back to go install..."
   if (-not (Get-Command go -ErrorAction SilentlyContinue)) {
     Write-Error "Go is not installed. Install it from https://go.dev/dl/ and re-run this script, or download catsay manually from https://github.com/$Repo/releases"
     exit 1

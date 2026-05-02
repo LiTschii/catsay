@@ -17,6 +17,9 @@
 (__(__)___(__)__)
 ```
 
+> *The cat is a generic domestic shorthair. Any resemblance to a specific
+> cultural figure is purely coincidental and geometrically inevitable.*
+
 ## Install
 
 ### Linux / macOS — curl
@@ -72,7 +75,8 @@ source ~/.bashrc   # or source ~/.zshrc
 ```
 
 > **Note:** The alias only applies to interactive shells. Scripts that call `cat` directly are
-> unaffected, so nothing breaks.
+> unaffected, so nothing breaks. The cat rendered in your terminal is also unaffected by this
+> alias and remains a generic domestic shorthair.
 
 ## Usage
 
@@ -117,19 +121,23 @@ that can make the output harder to parse at a glance. A value of `2` or `3`
 produces a more proportional result on terminals wider than 120 columns.
 
 ```bash
-catsay -s "i am normal"          # default
-catsay -s "i had too much food" -f 3
+catsay -s "i am normal"             # default
+catsay -s "i have a large terminal" -f 3
 ```
 
 ```
     /\_____/\                       /\_________/\
-   /  o   o  \                     /  o     o  \
+   /  o   o  \                     /  o    o  \
   ( ==  ^  == )     -f 3 ->       ( ==    ^    == )
    )         (                     )             (
   (           )                   (               )
  ( (__)   (__) )                 ( (__)     (__) )
-(__(__)___(__)__)               (__(__)___(__)__)
+(__(__)___(__)__)               (__(__)_______(__)__)
 ```
+
+> *The wider variant is provided for ergonomic reasons. The fact that
+> higher `-f` values produce a rounder, more substantially-built cat is
+> an implementation detail, not a character study.*
 
 ## Why?
 
@@ -142,11 +150,12 @@ The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere
 
 | | `cowsay` | `catsay` |
 |---|---|---|
-| Animal | 🐄 Cow | 🐱 Cat |
+| Animal | 🐄 Cow | 🐱 Cat (generic) |
 | Input | stdin only | **file args** + stdin fallback |
 | Multiple files | ❌ | ✅ concatenated |
 | Dependencies | Perl | **none** |
 | Install | package manager | one `curl` or `wget` command |
+| IP concerns | none | [see FAQ](#faq) |
 
 ## FAQ
 
@@ -190,6 +199,16 @@ author is aware of. The character `(` is not owned by anyone.
 
 ---
 
+**Q: I set `-f` to a very high value and the cat now takes up my entire screen. Is this a bug?**
+
+No. The `-f` flag has no upper bound by design. The author acknowledges that values
+above `6` produce a cat that is, objectively, very large. This is consistent with
+the documented behavior of the flag. The resulting figure may bear an enhanced
+resemblance to a cartoon cat of considerable cultural recognition. This remains a
+collateral outcome. It is not a bug. It is also not Garfield.
+
+---
+
 **Q: Will there ever be a version of the cat that looks less like Garfield?**
 
 The current cat design is considered stable. Proposals to alter the facial geometry
@@ -213,6 +232,9 @@ Modifications made for use in `catsay`:
   character grid
 - A horizontal scaling parameter (`-f`) was introduced; the base geometry of the
   original is preserved at the default scale of `1`
+- The cat depicted in the original and in `catsay` is a generic domestic shorthair.
+  No affiliation with any specific orange cartoon cat, Monday-hating or otherwise,
+  is implied, intended, or legally defensible.
 
 If you are the original author and would prefer a different form of attribution,
 or no attribution at all, please open an issue or contact the maintainer directly.

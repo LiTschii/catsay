@@ -10,23 +10,25 @@ import (
 )
 
 // buildCat generates the ASCII cat widened by fatness (horizontal only).
-// fat=1 is default. Each extra unit adds 2 spaces of girth inside the body.
+// fat=1 is default. Each extra unit adds 2 chars of girth to the body width.
 func buildCat(fat int) string {
 	if fat < 1 {
 		fat = 1
 	}
-	p := strings.Repeat(" ", (fat-1)*2) // padding per side
-	u := strings.Repeat("_", (fat-1)*2) // underscore padding for feet
+	p := strings.Repeat(" ", (fat-1)*2) // space padding between body halves
+	u := strings.Repeat("_", (fat-1)*2) // underscore padding for feet row
+	h := strings.Repeat("_", 5+(fat-1)*2) // underscores for head/ears row
 
 	return fmt.Sprintf(
 		"\n"+
-			"    /\\_____/\\\n"+
+			"    /\\%s/\\\n"+
 			"   /  o%s   o  \\\n"+
 			"  ( ==%s  ^  ==%s )\n"+
 			"   )%s         %s(\n"+
 			"  (%s           %s)\n"+
-			" ( (%s__)   (__%s) )\n"+
-			"(__(__)%s___(__)%s__)\n",
+			" ( (__)%s   %s(__) )\n"+
+			"(__(__)%s___%s(__)__)\n",
+		h,
 		p,
 		p, p,
 		p, p,

@@ -19,28 +19,36 @@
 
 ## Install
 
-### One-liner (Linux & macOS)
+### Linux / macOS — curl
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/LiTLiTschi/catsay/main/install.sh | sh
 ```
 
-No dependencies required — just `curl`. Downloads a fully static binary for your arch (`amd64` or `arm64`).
-Installs to `/usr/local/bin/catsay`, or `~/.local/bin/catsay` if you don't have sudo.
+### Linux / macOS — wget
+
+```sh
+wget -qO- https://raw.githubusercontent.com/LiTLiTschi/catsay/main/install.sh | sh
+```
+
+No repo clone needed. The script:
+- Works with either `curl` or `wget` (whichever is available)
+- Downloads a fully static prebuilt binary for your arch (`amd64` / `arm64`)
+- Falls back to building from source if no release exists yet (requires Go)
+- Installs to `/usr/local/bin/` — or `~/.local/bin/` if you don’t have sudo
+
+### Windows — PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/LiTLiTschi/catsay/main/install.ps1 | iex
+```
+
+Installs to `%LOCALAPPDATA%\Programs\catsay\` and adds it to your user PATH automatically.
 
 ### go install (if you have Go)
 
 ```bash
 go install github.com/LiTLiTschi/catsay@latest
-```
-
-### From source
-
-```bash
-git clone https://github.com/LiTLiTschi/catsay
-cd catsay
-CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -o catsay .
-sudo mv catsay /usr/local/bin/
 ```
 
 ## Usage
@@ -75,7 +83,7 @@ The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere
 | Input | stdin only | **file args** + stdin fallback |
 | Multiple files | ❌ | ✅ concatenated |
 | Dependencies | Perl | **none** |
-| Install | package manager | `curl \| sh` or single binary |
+| Install | package manager | one `curl` or `wget` command |
 
 ## License
 

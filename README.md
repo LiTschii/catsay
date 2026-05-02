@@ -219,12 +219,11 @@ sounds.
 
 ---
 
-**Q: Are there plans for other tools?**
-
-I like `catsay` — it makes my daily workflow so much smoother, and every time a file
+**Q: Are there plans for other tools? I like `catsay` — it makes my daily workflow so much smoother, and every time a file
 lands in my terminal wrapped in a little ASCII cat it genuinely makes the experience
 feel less like staring at raw output and more like something that was *made*. That
-feeling is exactly what I want to carry into the next tool.
+feeling is exactly what I want to carry into the next tool.**
+
 
 Yes, and I am genuinely excited about this one! The next tool is `grepfield` — a calmer,
 more considered, and visually expressive alternative to `grep`. It is the natural companion

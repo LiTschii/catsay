@@ -5,6 +5,7 @@ BIN=catsay
 REPO="LiTLiTschi/catsay"
 INSTALL_DIR="/usr/local/bin"
 TMP=$(mktemp)
+TMPTAR=$(mktemp)
 
 die() { echo "error: $1" >&2; exit 1; }
 
@@ -48,14 +49,26 @@ LATEST=$(fetch "https://api.github.com/repos/${REPO}/releases/latest" /dev/stdou
   | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')
 
 if [ -n "$LATEST" ]; then
-  URL="https://github.com/${REPO}/releases/download/${LATEST}/${BIN}-${SUFFIX}"
+  URL="https://github.com/${REPO}/releases/download/${LATEST}/${BIN}-${SUFFIX}.tar.gz"
   echo "Downloading ${BIN} ${LATEST} (${SUFFIX})..."
-  if fetch "$URL" "$TMP" 2>/dev/null && [ -s "$TMP" ]; then
-    chmod +x "$TMP"
-    $SUDO mv "$TMP" "${INSTALL_DIR}/${BIN}"
+  if fetch "$URL" "$TMPTAR" 2>/dev/null && [ -s "$TMPTAR" ]; then
+    tar -xzf "$TMPTAR" -C "$(dirname "$TMP")" "$BIN" 2>/dev/null \
+      || tar -xzf "$TMPTAR" -C "$(dirname "$TMP")" --strip-components=1 2>/dev/null
+    EXTRACTED="$(dirname "$TMP")/$BIN"
+    if [ -f "$EXTRACTED" ]; then
+      chmod +x "$EXTRACTED"
+      $SUDO mv "$EXTRACTED" "${INSTALL_DIR}/${BIN}"
+    else
+      # binary might be directly in the tarball root with a different layout
+      tar -xzf "$TMPTAR" -O > "$TMP" 2>/dev/null
+      chmod +x "$TMP"
+      $SUDO mv "$TMP" "${INSTALL_DIR}/${BIN}"
+    fi
+    rm -f "$TMPTAR"
     echo "Installed ${BIN} ${LATEST} -> ${INSTALL_DIR}/${BIN}"
     exit 0
   fi
+  rm -f "$TMPTAR"
 fi
 
 # --- fallback: build from source with Go ---
@@ -73,8 +86,7 @@ if ! command -v go >/dev/null 2>&1; then
   GOTMP=$(mktemp -d)
   trap 'rm -rf "$GOTMP"' EXIT
   GO_VERSION="1.22.3"
-  GO_ARCH="$ARCH"
-  GO_TARBALL="go${GO_VERSION}.${OS}-${GO_ARCH}.tar.gz"
+  GO_TARBALL="go${GO_VERSION}.${OS}-${ARCH}.tar.gz"
   fetch "https://go.dev/dl/${GO_TARBALL}" "${GOTMP}/${GO_TARBALL}"
   $SUDO tar -C /usr/local -xzf "${GOTMP}/${GO_TARBALL}"
   export PATH="$PATH:/usr/local/go/bin"

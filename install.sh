@@ -52,18 +52,9 @@ if [ -n "$LATEST" ]; then
   URL="https://github.com/${REPO}/releases/download/${LATEST}/${BIN}-${SUFFIX}.tar.gz"
   echo "Downloading ${BIN} ${LATEST} (${SUFFIX})..."
   if fetch "$URL" "$TMPTAR" 2>/dev/null && [ -s "$TMPTAR" ]; then
-    tar -xzf "$TMPTAR" -C "$(dirname "$TMP")" "$BIN" 2>/dev/null \
-      || tar -xzf "$TMPTAR" -C "$(dirname "$TMP")" --strip-components=1 2>/dev/null
-    EXTRACTED="$(dirname "$TMP")/$BIN"
-    if [ -f "$EXTRACTED" ]; then
-      chmod +x "$EXTRACTED"
-      $SUDO mv "$EXTRACTED" "${INSTALL_DIR}/${BIN}"
-    else
-      # binary might be directly in the tarball root with a different layout
-      tar -xzf "$TMPTAR" -O > "$TMP" 2>/dev/null
-      chmod +x "$TMP"
-      $SUDO mv "$TMP" "${INSTALL_DIR}/${BIN}"
-    fi
+    tar -xzOf "$TMPTAR" "$BIN" > "$TMP"
+    chmod +x "$TMP"
+    $SUDO mv "$TMP" "${INSTALL_DIR}/${BIN}"
     rm -f "$TMPTAR"
     echo "Installed ${BIN} ${LATEST} -> ${INSTALL_DIR}/${BIN}"
     exit 0

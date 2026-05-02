@@ -63,6 +63,45 @@ irm https://raw.githubusercontent.com/LiTLiTschi/catsay/main/install.ps1 | iex
 
 Installs to `%LOCALAPPDATA%\Programs\catsay\` and adds it to your user PATH automatically.
 
+### Manual install (direct binary download)
+
+If your environment restricts piping remote scripts into a shell, you can download and install the binary directly with a single `&&`-chained command. No script execution involved.
+
+**Linux — amd64**
+```sh
+curl -fsSL https://github.com/LiTLiTschi/catsay/releases/latest/download/catsay-linux-amd64.tar.gz \
+  | tar -xz && chmod +x catsay && sudo mv catsay /usr/local/bin/
+```
+
+**Linux — arm64** (Raspberry Pi, etc.)
+```sh
+curl -fsSL https://github.com/LiTLiTschi/catsay/releases/latest/download/catsay-linux-arm64.tar.gz \
+  | tar -xz && chmod +x catsay && sudo mv catsay /usr/local/bin/
+```
+
+**macOS — Apple Silicon (arm64)**
+```sh
+curl -fsSL https://github.com/LiTLiTschi/catsay/releases/latest/download/catsay-darwin-arm64.tar.gz \
+  | tar -xz && chmod +x catsay && sudo mv catsay /usr/local/bin/
+```
+
+**macOS — Intel (amd64)**
+```sh
+curl -fsSL https://github.com/LiTLiTschi/catsay/releases/latest/download/catsay-darwin-amd64.tar.gz \
+  | tar -xz && chmod +x catsay && sudo mv catsay /usr/local/bin/
+```
+
+**Windows — PowerShell (direct download)**
+```powershell
+$dest = "$env:LOCALAPPDATA\Programs\catsay"; `
+New-Item -ItemType Directory -Force -Path $dest | Out-Null; `
+Invoke-WebRequest "https://github.com/LiTLiTschi/catsay/releases/latest/download/catsay.exe" `
+  -OutFile "$dest\catsay.exe" -UseBasicParsing; `
+[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$dest", "User")
+```
+
+No installer, no script interpreter, no Go — just a binary landing in the right place.
+
 ### go install (if you have Go)
 
 ```bash

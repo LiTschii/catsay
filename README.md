@@ -13,7 +13,7 @@
   ( ==  ^  == )
    )         (
   (           )
- ( (__)   (__) )
+ ( (  )   (  ) )
 (__(__)___(__)__)
 ```
 
@@ -21,6 +21,21 @@
 > cultural figure is purely coincidental and geometrically inevitable.*
 
 ## Install
+
+### npm / npx (no install required)
+
+```sh
+npx @litlitschi/catsay README.md
+```
+
+Or install globally:
+
+```sh
+npm install -g @litlitschi/catsay
+catsay README.md
+```
+
+The npm package wraps the native binary for your platform — no Go required.
 
 ### Linux / macOS — curl
 
@@ -131,7 +146,7 @@ catsay -s "i have a large terminal" -f 3
   ( ==  ^  == )     -f 3 ->       ( ==    ^    == )
    )         (                     )             (
   (           )                   (               )
- ( (__)   (__) )                 ( (__)       (__) )
+ ( (  )   (  ) )                 ( (  )       (  ) )
 (__(__)___(__)__)               (__(__)_______(__)__)
 ```
 
@@ -251,7 +266,7 @@ output, attributed to `jgs` and sourced from the ASCII art community:
     | \/   |         \   ()   /     I thought of you, my garden
     | |    |          `> /\ <`   ,,,     would be full...
     \ \    /  @@@@    (o/\/\o)  {{{}}}                 _ _
-     '\\//'  @@()@@  _ )    (    ~Y~       @@@@     _{ ' }_
+     '\\//\'  @@()@@  _ )    (    ~Y~       @@@@     _{ ' }_
        ||     @@@@ _(_)_   wWWWw .oOOo.   @@()@@   { `.!.` }
        ||     ,/  (_)@(_)  (___) OO()OO    @@@@  _ ',_/Y\_,'
        ||  ,\ | /)  (_)\     Y   'OOOO',,,(\\|/ _(_)_ {_,_}
@@ -259,7 +274,7 @@ output, attributed to `jgs` and sourced from the ASCII art community:
    | | ||  | |;,,,(___) |@@()@@ _(_)_| ~Y~ wWWWw(_)\ (\| {{{}}}
    | | || / / {{}}} Y  \| @@@@ (_)#(_) \|  (___)   |  \| /~Y~
     \ \||/ /\\|~Y~ \|/  | \ \/  /(_) |/ |/   Y    \|/  |//\|/
-jgs\ `\\//',.\\|/|//.|/\\|/\\|,\\|/ //\\|/\\|.\\\\| // \\|\\ |/,\\|/
+jgs\ `\\//\',.\\|/|//.|/\\|/\\|,\\|/ //\\|/\\|.\\\\| // \\|\\ |/,\\|/
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 

@@ -6,34 +6,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"syscall"
 	"unicode/utf8"
-	"unsafe"
 )
-
-// termWidth returns the terminal width, falling back to 80.
-func termWidth() int {
-	// 1. respect explicit override
-	if v := os.Getenv("COLUMNS"); v != "" {
-		if n, err := strconv.Atoi(v); err == nil && n > 0 {
-			return n
-		}
-	}
-	// 2. ioctl TIOCGWINSZ on stdout
-	type winsize struct {
-		Row, Col, Xpixel, Ypixel uint16
-	}
-	var ws winsize
-	if _, _, errno := syscall.Syscall(
-		syscall.SYS_IOCTL,
-		uintptr(syscall.Stdout),
-		0x5413, // TIOCGWINSZ
-		uintptr(unsafe.Pointer(&ws)),
-	); errno == 0 && ws.Col > 0 {
-		return int(ws.Col)
-	}
-	return 80
-}
 
 // expandTabs replaces tab characters with spaces (tabstop=8) so that
 // rune counting reflects the visual column width.
@@ -54,16 +28,6 @@ func expandTabs(s string) string {
 }
 
 // buildCat generates the ASCII cat widened by fatness factor.
-// fat=1 is default. Each extra unit adds 2 chars of girth.
-//
-// Geometry (g = (fat-1)*2):
-//
-//	head underscores : 5 + g
-//	eye gap          : 3 + g  spaces between the two eyes
-//	nose half-pad    : 2 + g/2  spaces between == and ^
-//	body gap         : 9 + g  /  11 + g
-//	paw inner gap    : 3 + g  spaces between (  ) groups
-//	feet underscores : 3 + g  middle underscores
 func buildCat(fat int) string {
 	if fat < 1 {
 		fat = 1
@@ -210,12 +174,10 @@ func main() {
 		lines = []string{"..."}
 	}
 
-	// expand tabs before measuring/wrapping so visual width is accurate
 	for i, l := range lines {
 		lines[i] = expandTabs(l)
 	}
 
-	// bubble content width = terminal width minus borders ("| " + " |" = 4)
 	wrap := termWidth() - 4
 	if wrap < 20 {
 		wrap = 20

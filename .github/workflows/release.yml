@@ -195,7 +195,7 @@ jobs:
           BASE="https://github.com/LiTLiTschi/catsay/releases/download/v${VERSION}"
           cat > tap/Formula/catsay.rb << EOF
           class Catsay < Formula
-            desc "Like cowsay, but it's a cat — and it reads files directly, like cat"
+            desc "Like cowsay, but it's a cat -- and it reads files directly, like cat"
             homepage "https://github.com/LiTLiTschi/catsay"
             version "${VERSION}"
             license "MIT"
@@ -247,21 +247,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout npm wrapper
+      - name: Checkout catsay
         uses: actions/checkout@v4
-        with:
-          repository: LiTLiTschi/catsay-npm
-          token: ${{ secrets.TAP_TOKEN }}
-          path: npm-pkg
 
-      - name: Update version
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Bump version
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          cd npm-pkg
-          npm version $VERSION --no-git-tag-version
+          cd npm
+          npm version $VERSION --no-git-tag-version --allow-same-version
 
       - name: Publish
         run: |
-          cd npm-pkg
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          npm publish
+          cd npm
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

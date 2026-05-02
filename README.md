@@ -221,17 +221,16 @@ sounds.
 
 **Q: Are there plans for other tools?**
 
-Yes. The next tool is `grepfield`.
+Yes. The next tool is `grepfield` — a calmer, more considered alternative to `grep`.
 
----
+`grep` is a precise and unforgiving tool. It returns matches as raw lines, dense and clinical,
+with no spatial context beyond line numbers. This is appropriate for automated pipelines.
+It is less appropriate for a human trying to understand an unfamiliar codebase at 11pm.
 
-**Q: Why is the next tool called `grepfield`?**
-
-`grep` searches fields of text. A field is the bounded, structured region of data
-being queried — a standard concept in text processing, well established since the
-early Unix era. The name is a straightforward compound of the operation (`grep`) and
-its domain (`field`). There is no other explanation. The name was not chosen for any
-other reason. It is a tool name.
+`grepfield` wraps matches in a rendered scene, surfaced one at a time or paginated, with
+surrounding context presented in a way that does not feel like a stack trace. The name is a
+straightforward compound of the operation (`grep`) and its domain (`field`) — a standard
+concept in text processing since at least 1977. There is no other explanation for the name.
 
 ## ASCII Art Attribution
 

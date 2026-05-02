@@ -6,32 +6,24 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    name: Build & Release
+  build-unix:
+    name: Build Unix
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - goos: linux
             goarch: amd64
-            asset_name: catsay-linux-amd64
-            binary: catsay
+            asset_name: catsay-linux-amd64.tar.gz
           - goos: linux
             goarch: arm64
-            asset_name: catsay-linux-arm64
-            binary: catsay
+            asset_name: catsay-linux-arm64.tar.gz
           - goos: darwin
             goarch: amd64
-            asset_name: catsay-darwin-amd64
-            binary: catsay
+            asset_name: catsay-darwin-amd64.tar.gz
           - goos: darwin
             goarch: arm64
-            asset_name: catsay-darwin-arm64
-            binary: catsay
-          - goos: windows
-            goarch: amd64
-            asset_name: catsay-windows-amd64.exe
-            binary: catsay.exe
+            asset_name: catsay-darwin-arm64.tar.gz
 
     steps:
       - uses: actions/checkout@v4
@@ -47,12 +39,76 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: '0'
         run: |
-          go build -ldflags="-s -w -extldflags '-static'" -trimpath -o ${{ matrix.binary }} .
+          go build -ldflags="-s -w -extldflags '-static'" -trimpath -o catsay .
 
-      - name: Rename for release
-        run: mv ${{ matrix.binary }} ${{ matrix.asset_name }}
+      - name: Package tarball
+        run: tar -czf ${{ matrix.asset_name }} catsay
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ matrix.asset_name }}
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build
+        env:
+          CGO_ENABLED: '0'
+        run: go build -ldflags="-s -w" -trimpath -o catsay.exe .
+
+      - name: Install NSIS
+        run: choco install nsis --no-progress -y
+
+      - name: Write NSIS script
+        shell: bash
+        run: |
+          cat > installer.nsi << 'EOF'
+          Unicode True
+          Name "catsay"
+          OutFile "catsay-setup.exe"
+          InstallDir "$LOCALAPPDATA\Programs\catsay"
+          InstallDirRegKey HKCU "Software\catsay" "Install_Dir"
+          RequestExecutionLevel user
+          ShowInstDetails show
+
+          Section "Install"
+            SetOutPath "$INSTDIR"
+            File "catsay.exe"
+            WriteRegStr HKCU "Software\catsay" "Install_Dir" "$INSTDIR"
+            ; Add to user PATH
+            ReadRegStr $0 HKCU "Environment" "PATH"
+            StrCmp $0 "" 0 +2
+            StrCpy $0 "$INSTDIR"
+            StrCpy $0 "$0;$INSTDIR"
+            WriteRegExpandStr HKCU "Environment" "PATH" "$0"
+            SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=1000
+            WriteUninstaller "$INSTDIR\uninstall.exe"
+          SectionEnd
+
+          Section "Uninstall"
+            Delete "$INSTDIR\catsay.exe"
+            Delete "$INSTDIR\uninstall.exe"
+            RMDir "$INSTDIR"
+            DeleteRegKey HKCU "Software\catsay"
+          SectionEnd
+          EOF
+
+      - name: Build installer
+        run: makensis installer.nsi
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            catsay.exe
+            catsay-setup.exe

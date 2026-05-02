@@ -18,7 +18,7 @@ if ($UserPath -notlike "*$InstallDir*") {
   Write-Host "Added $InstallDir to PATH."
 }
 
-# get latest release
+# get latest release tag
 $Release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
 $Tag     = $Release.tag_name
 
@@ -27,16 +27,15 @@ if (-not $Tag) {
   exit 1
 }
 
-# look for catsay.exe asset
-$Asset = $Release.assets | Where-Object { $_.name -eq $Bin } | Select-Object -First 1
+# construct URL directly from tag — no asset list lookup needed
+$Url  = "https://github.com/$Repo/releases/download/$Tag/$Bin"
+$Dest = Join-Path $InstallDir $Bin
 
-if ($Asset) {
-  $Url  = $Asset.browser_download_url
-  $Dest = Join-Path $InstallDir $Bin
-  Write-Host "Downloading catsay $Tag..."
+Write-Host "Downloading catsay $Tag..."
+try {
   Invoke-WebRequest -Uri $Url -OutFile $Dest -UseBasicParsing
   Write-Host "Installed -> $Dest"
-} else {
+} catch {
   Write-Host "No prebuilt binary found for $Tag. Falling back to go install..."
   if (-not (Get-Command go -ErrorAction SilentlyContinue)) {
     Write-Error "Go is not installed. Install it from https://go.dev/dl/ and re-run this script, or download catsay manually from https://github.com/$Repo/releases"

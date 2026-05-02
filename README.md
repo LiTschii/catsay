@@ -35,7 +35,7 @@ No repo clone needed. The script:
 - Works with either `curl` or `wget` (whichever is available)
 - Downloads a fully static prebuilt binary for your arch (`amd64` / `arm64`)
 - Falls back to building from source if no release exists yet (requires Go)
-- Installs to `/usr/local/bin/` — or `~/.local/bin/` if you don’t have sudo
+- Installs to `/usr/local/bin/` — or `~/.local/bin/` if you don't have sudo
 
 ### Windows — PowerShell
 
@@ -50,6 +50,29 @@ Installs to `%LOCALAPPDATA%\Programs\catsay\` and adds it to your user PATH auto
 ```bash
 go install github.com/LiTLiTschi/catsay@latest
 ```
+
+### Optional but Recommended: replace `cat` with `catsay`
+
+`catsay` is a strict superset of `cat` for reading files — it accepts the same file arguments and
+falls back to stdin just like `cat` does, so aliasing it is safe in interactive shells.
+The upside: every time you inspect a config file, a log, or a script, you get immediate visual
+confirmation that the output belongs to a single command invocation, which is useful when
+your terminal history is cluttered or you’re piping output from multiple sources.
+
+Add to your `~/.bashrc` or `~/.zshrc`:
+
+```sh
+alias cat='catsay'
+```
+
+Then reload your shell:
+
+```sh
+source ~/.bashrc   # or source ~/.zshrc
+```
+
+> **Note:** The alias only applies to interactive shells. Scripts that call `cat` directly are
+> unaffected, so nothing breaks.
 
 ## Usage
 

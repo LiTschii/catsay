@@ -8,9 +8,11 @@ die() { echo "error: $1" >&2; exit 1; }
 
 # pick downloader
 if command -v curl >/dev/null 2>&1; then
-  fetch() { curl -fsSL "$1" -o "$2"; }
+  fetch()    { curl -fsSL "$1" -o "$2"; }
+  fetch_out() { curl -fsSL "$1"; }
 elif command -v wget >/dev/null 2>&1; then
-  fetch() { wget -qO "$2" "$1"; }
+  fetch()    { wget -qO "$2" "$1"; }
+  fetch_out() { wget -qO- "$1"; }
 else
   die "neither curl nor wget found"
 fi
@@ -42,7 +44,7 @@ if [ ! -w "$INSTALL_DIR" ]; then
 fi
 
 # --- try prebuilt binary from latest release ---
-LATEST=$(fetch "https://api.github.com/repos/${REPO}/releases/latest" /dev/stdout 2>/dev/null \
+LATEST=$(fetch_out "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null \
   | grep '"tag_name"' | head -1 \
   | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')
 
@@ -95,8 +97,8 @@ if ! command -v go >/dev/null 2>&1; then
 fi
 
 BUILDTMP=$(mktemp -d)
-fetch "https://raw.githubusercontent.com/${REPO}/main/main.go" "${BUILDTMP}/main.go"
-fetch "https://raw.githubusercontent.com/${REPO}/main/go.mod"  "${BUILDTMP}/go.mod"
+fetch_out "https://raw.githubusercontent.com/${REPO}/main/main.go" > "${BUILDTMP}/main.go"
+fetch_out "https://raw.githubusercontent.com/${REPO}/main/go.mod"  > "${BUILDTMP}/go.mod"
 TMP=$(mktemp)
 ( cd "$BUILDTMP" && CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -o "$TMP" . )
 rm -rf "$BUILDTMP"

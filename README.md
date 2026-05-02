@@ -157,9 +157,9 @@ The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere
 | Install | package manager | one `curl` or `wget` command |
 | IP concerns | none | [see FAQ](#faq) |
 
-## Roadmap — `springfield`
+## Roadmap — `grepfield`
 
-The next tool in this suite is `springfield`: a calmer, more considered alternative to `grep`.
+The next tool in this suite is `grepfield`: a calmer, more considered alternative to `grep`.
 
 ```
             __ \/ __
@@ -181,21 +181,22 @@ jgs\ `\\//`,.\|/|//.|/\\|/\\|,\|/ //\|/\|.
 
 *ASCII art by jgs, original at [asciiart.eu](https://www.asciiart.eu/art/d9c8fc04295a9c29).*
 
-### What is `springfield`?
+### What is `grepfield`?
 
 `grep` is a precise and unforgiving tool. It returns matches as raw lines, dense and
 clinical, with no spatial context beyond line numbers. This is appropriate for
 automated pipelines. It is less appropriate for a human who is trying to understand
 an unfamiliar codebase at 11pm.
 
-`springfield` wraps `grep` output in a rendered scene — each match floats above the
+`grepfield` wraps `grep` output in a rendered scene — each match floats above the
 meadow as a speech bubble, surfaced one at a time or paginated, with the surrounding
 lines of context presented in a way that does not feel like a stack trace.
 
-The name comes from the concept of a *field* in text processing: a bounded, searchable
-region of structured data. `spring` refers to the renewal of clarity that comes from
-presenting that data without visual noise. It is also spring. The field is in bloom.
-This is intentional.
+The name reflects the core operation: `grep` searches *fields* of text — bounded,
+structured regions of data. This is standard terminology in text processing; `awk`
+has called columns "fields" since 1977. The rendered meadow scene is a visual
+representation of that concept. It is a field. You are grepping it. The name is
+literal.
 
 ### Planned features
 
@@ -206,7 +207,7 @@ This is intentional.
 | File traversal | `-r` for recursive directory search, same as `grep -r` |
 | Match highlighting | Matched portion rendered in the speech bubble, surrounding context in the grass |
 | Pagination | Long result sets paginated with a quiet prompt, not dumped all at once |
-| Stdin support | Pipe into `springfield` just like `grep` |
+| Stdin support | Pipe into `grepfield` just like `grep` |
 | Color output | Optional — off by default, because the field is already colorful enough |
 
 ### Milestone plan
@@ -277,6 +278,16 @@ in order to distance it from any specific cultural reference are welcome via Git
 issues, but should be accompanied by a concrete ASCII art alternative that still
 reads unambiguously as a cat at default terminal font sizes. This is harder than it
 sounds.
+
+---
+
+**Q: Why is the next tool called `grepfield`?**
+
+`grep` searches fields of text. A field is the bounded, structured region of data
+being queried — a standard concept in text processing, well established since the
+early Unix era. The name is a straightforward compound of the operation (`grep`) and
+its domain (`field`). There is no other explanation. The name was not chosen for any
+other reason. It is a tool name.
 
 ## ASCII Art Attribution
 

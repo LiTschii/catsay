@@ -74,50 +74,46 @@ jobs:
         shell: pwsh
         run: |
           choco install nsis --no-progress -y
-          $nsis = (Get-ChildItem "C:\Program Files*\NSIS\makensis.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).DirectoryName
-          if (-not $nsis) { $nsis = (Get-ChildItem "C:\ProgramData\chocolatey\bin\makensis.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).DirectoryName }
-          if (-not $nsis) { throw "makensis.exe not found after choco install" }
-          echo "NSIS_DIR=$nsis" >> $env:GITHUB_ENV
+          $nsis = (Get-ChildItem "C:\Program Files (x86)\NSIS\makensis.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).DirectoryName
+          if (-not $nsis) { throw "makensis.exe not found" }
           echo "$nsis" >> $env:GITHUB_PATH
 
       - name: Write NSIS script
-        shell: bash
+        shell: pwsh
         run: |
-          cat > installer.nsi << 'EOF'
-          Unicode True
-          Name "catsay"
-          OutFile "catsay-setup.exe"
-          InstallDir "$LOCALAPPDATA\Programs\catsay"
-          InstallDirRegKey HKCU "Software\catsay" "Install_Dir"
-          RequestExecutionLevel user
-          ShowInstDetails show
-
-          Section "Install"
-            SetOutPath "$INSTDIR"
-            File "catsay.exe"
-            WriteRegStr HKCU "Software\catsay" "Install_Dir" "$INSTDIR"
-            ; Add to user PATH
-            ReadRegStr $0 HKCU "Environment" "PATH"
-            StrCmp $0 "" 0 +2
-            StrCpy $0 "$INSTDIR"
-            StrCpy $0 "$0;$INSTDIR"
-            WriteRegExpandStr HKCU "Environment" "PATH" "$0"
-            SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=1000
-            WriteUninstaller "$INSTDIR\uninstall.exe"
-          SectionEnd
-
-          Section "Uninstall"
-            Delete "$INSTDIR\catsay.exe"
-            Delete "$INSTDIR\uninstall.exe"
-            RMDir "$INSTDIR"
-            DeleteRegKey HKCU "Software\catsay"
-          SectionEnd
-          EOF
+          $lines = @(
+            'Unicode True',
+            'Name "catsay"',
+            'OutFile "catsay-setup.exe"',
+            'InstallDir "$LOCALAPPDATA\Programs\catsay"',
+            'InstallDirRegKey HKCU "Software\catsay" "Install_Dir"',
+            'RequestExecutionLevel user',
+            'ShowInstDetails show',
+            '',
+            'Section "Install"',
+            '  SetOutPath "$INSTDIR"',
+            '  File "catsay.exe"',
+            '  WriteRegStr HKCU "Software\catsay" "Install_Dir" "$INSTDIR"',
+            '  ReadRegStr $0 HKCU "Environment" "PATH"',
+            '  StrCmp $0 "" 0 +2',
+            '  StrCpy $0 "$INSTDIR"',
+            '  StrCpy $0 "$0;$INSTDIR"',
+            '  WriteRegExpandStr HKCU "Environment" "PATH" "$0"',
+            '  WriteUninstaller "$INSTDIR\uninstall.exe"',
+            'SectionEnd',
+            '',
+            'Section "Uninstall"',
+            '  Delete "$INSTDIR\catsay.exe"',
+            '  Delete "$INSTDIR\uninstall.exe"',
+            '  RMDir "$INSTDIR"',
+            '  DeleteRegKey HKCU "Software\catsay"',
+            'SectionEnd'
+          )
+          $lines | Set-Content -Path installer.nsi -Encoding UTF8
 
       - name: Build installer
         shell: pwsh
-        run: |
-          makensis installer.nsi
+        run: makensis installer.nsi
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2

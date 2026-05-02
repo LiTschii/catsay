@@ -163,3 +163,105 @@ jobs:
             catsay.exe
             catsay-setup.exe
             catsay.msi
+
+  update-homebrew:
+    name: Update Homebrew Tap
+    needs: build-unix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Compute SHA256 hashes
+        id: hashes
+        run: |
+          VERSION=${GITHUB_REF_NAME}
+          BASE="https://github.com/LiTLiTschi/catsay/releases/download/${VERSION}"
+          for arch in darwin-amd64 darwin-arm64 linux-amd64 linux-arm64; do
+            curl -fsSL "${BASE}/catsay-${arch}.tar.gz" -o "catsay-${arch}.tar.gz"
+            hash=$(sha256sum "catsay-${arch}.tar.gz" | awk '{print $1}')
+            echo "${arch}=${hash}" >> $GITHUB_OUTPUT
+          done
+          echo "version=${VERSION#v}" >> $GITHUB_OUTPUT
+
+      - name: Checkout tap repo
+        uses: actions/checkout@v4
+        with:
+          repository: LiTLiTschi/homebrew-catsay
+          token: ${{ secrets.TAP_TOKEN }}
+          path: tap
+
+      - name: Update formula
+        run: |
+          VERSION=${{ steps.hashes.outputs.version }}
+          BASE="https://github.com/LiTLiTschi/catsay/releases/download/v${VERSION}"
+          cat > tap/Formula/catsay.rb << EOF
+          class Catsay < Formula
+            desc "Like cowsay, but it's a cat — and it reads files directly, like cat"
+            homepage "https://github.com/LiTLiTschi/catsay"
+            version "${VERSION}"
+            license "MIT"
+
+            on_macos do
+              on_arm do
+                url "${BASE}/catsay-darwin-arm64.tar.gz"
+                sha256 "${{ steps.hashes.outputs.darwin-arm64 }}"
+              end
+              on_intel do
+                url "${BASE}/catsay-darwin-amd64.tar.gz"
+                sha256 "${{ steps.hashes.outputs.darwin-amd64 }}"
+              end
+            end
+
+            on_linux do
+              on_arm do
+                url "${BASE}/catsay-linux-arm64.tar.gz"
+                sha256 "${{ steps.hashes.outputs.linux-arm64 }}"
+              end
+              on_intel do
+                url "${BASE}/catsay-linux-amd64.tar.gz"
+                sha256 "${{ steps.hashes.outputs.linux-amd64 }}"
+              end
+            end
+
+            def install
+              bin.install "catsay"
+            end
+
+            test do
+              assert_match "meow", shell_output("#{bin}/catsay -s meow")
+            end
+          end
+          EOF
+
+      - name: Commit and push formula
+        run: |
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/catsay.rb
+          git commit -m "catsay ${{ steps.hashes.outputs.version }}"
+          git push
+
+  publish-npm:
+    name: Publish to npm
+    needs: build-unix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout npm wrapper
+        uses: actions/checkout@v4
+        with:
+          repository: LiTLiTschi/catsay-npm
+          token: ${{ secrets.TAP_TOKEN }}
+          path: npm-pkg
+
+      - name: Update version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          cd npm-pkg
+          npm version $VERSION --no-git-tag-version
+
+      - name: Publish
+        run: |
+          cd npm-pkg
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish

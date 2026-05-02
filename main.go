@@ -9,13 +9,13 @@ import (
 )
 
 const catAscii = `
-    \
-     \
-      /\_____/\
-     ( o   o  )
-     =( Y  )=
-      )     (
-     (_)-(_)
+    /\_____/\
+   /  o   o  \
+  ( ==  ^  == )
+   )         (
+  (           )
+ ( (  )   (  ) )
+(__(__)___(__)__)
 `
 
 func wrapLines(lines []string, maxWidth int) []string {
@@ -64,7 +64,6 @@ func main() {
 
 	args := os.Args[1:]
 	if len(args) == 0 {
-		// read from stdin
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			lines = append(lines, scanner.Text())

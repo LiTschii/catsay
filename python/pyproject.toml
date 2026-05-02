@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "catsay"
+version = "0.1.0"
+description = "Like cowsay, but it's a cat — and it reads files directly."
+readme = "../README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [{ name = "LiTLiTschi" }]
+keywords = ["cat", "cowsay", "cli", "terminal", "ascii"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/LiTLiTschi/catsay"
+Repository = "https://github.com/LiTLiTschi/catsay"
+
+[project.scripts]
+catsay = "catsay.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]  # look in python/ directory

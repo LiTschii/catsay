@@ -148,6 +148,56 @@ The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere
 | Dependencies | Perl | **none** |
 | Install | package manager | one `curl` or `wget` command |
 
+## FAQ
+
+**Q: Does the cat look like Garfield?**
+
+No. The cat is a generic felid rendered in standard ASCII box-drawing conventions.
+Garfield is a trademarked character with a distinct oval head, closed eyes, and
+visible stripes. The `catsay` cat has a triangular ear profile, open circular eyes,
+and a symmetric facial structure that is consistent with a generic domestic shorthair
+representation. Any resemblance is a consequence of the limited character set available
+in a 7-bit ASCII environment, not an intentional reference.
+
+---
+
+**Q: I used `-f 3` and now it looks even more like Garfield. Is this intentional?**
+
+No. The `-f` flag increases horizontal body width to improve proportionality on wide
+terminals, as documented above. The fact that a wider, rounder cat body superficially
+resembles a well-known overweight cartoon cat is an unavoidable geometric consequence
+of scaling a symmetric ASCII figure outward. This is not a design goal. It is a
+collateral outcome.
+
+---
+
+**Q: My colleague said "hey it's Garfield" when they saw the output. Should I be concerned?**
+
+No. This is a common reaction caused by pattern recognition bias — humans are highly
+trained to identify cat-shaped forms and associate them with culturally prominent
+cat characters. The `catsay` cat predates any specific pop-culture reference in the
+sense that it is derived from first principles of ASCII art cat construction. Your
+colleague's association, while understandable, is not legally or technically meaningful.
+
+---
+
+**Q: Could Paws, Inc. take legal action over the cat's appearance?**
+
+This question falls outside the scope of a README. That said: ASCII art consisting
+of standard punctuation characters arranged to suggest a round-faced cat does not
+constitute a copyrightable or trademarkable likeness under any jurisdiction the
+author is aware of. The character `(` is not owned by anyone.
+
+---
+
+**Q: Will there ever be a version of the cat that looks less like Garfield?**
+
+The current cat design is considered stable. Proposals to alter the facial geometry
+in order to distance it from any specific cultural reference are welcome via GitHub
+issues, but should be accompanied by a concrete ASCII art alternative that still
+reads unambiguously as a cat at default terminal font sizes. This is harder than it
+sounds.
+
 ## License
 
 MIT

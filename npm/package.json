@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Like cowsay, but it's a cat \u2014 and it reads files directly, like cat",
   "bin": {
-    "catsay": "./bin/catsay.js"
+    "catsay": "bin/catsay.js"
   },
   "scripts": {
     "postinstall": "node install.js"
@@ -12,7 +12,13 @@
     "bin/",
     "install.js"
   ],
-  "keywords": ["cat", "cowsay", "catsay", "cli", "terminal"],
+  "keywords": [
+    "cat",
+    "cowsay",
+    "catsay",
+    "cli",
+    "terminal"
+  ],
   "author": "LiTLiTschi",
   "license": "MIT",
   "repository": {

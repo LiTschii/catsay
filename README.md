@@ -221,7 +221,15 @@ sounds.
 
 **Q: Are there plans for other tools?**
 
-Yes. The next tool is `grepfield` — a calmer, more considered alternative to `grep`.
+I like `catsay` — it makes my daily workflow so much smoother, and every time a file
+lands in my terminal wrapped in a little ASCII cat it genuinely makes the experience
+feel less like staring at raw output and more like something that was *made*. That
+feeling is exactly what I want to carry into the next tool.
+
+Yes, and I am genuinely excited about this one! The next tool is `grepfield` — a calmer,
+more considered, and visually expressive alternative to `grep`. It is the natural companion
+to `catsay`: where `catsay` gives *reading* a face, `grepfield` gives *searching* a sense
+of place.
 
 `grep` is a precise and unforgiving tool. It returns matches as raw lines, dense and clinical,
 with no spatial context beyond line numbers. This is appropriate for automated pipelines.
@@ -231,6 +239,35 @@ It is less appropriate for a human trying to understand an unfamiliar codebase a
 surrounding context presented in a way that does not feel like a stack trace. The name is a
 straightforward compound of the operation (`grep`) and its domain (`field`) — a standard
 concept in text processing since at least 1977. There is no other explanation for the name.
+
+The "field" in `grepfield` is not metaphorical. Each match will be rendered inside a scene —
+not a box, not a panel, but a field. The kind of thing you might find on [asciiart.eu](https://www.asciiart.eu).
+ASCII art with depth, negative space, and something that looks like it was drawn rather than
+generated. Here is an early candidate scene being considered for the default `grepfield`
+output, attributed to `jgs` and sourced from the ASCII art community:
+
+```
+         ,            __ \/ __
+     /\^/`\          /o \{}/ o\   If I had a flower for each time
+    | \/   |         \   ()   /     I thought of you, my garden
+    | |    |          `> /\ <`   ,,,     would be full...
+    \ \    /  @@@@    (o/\/\o)  {{{}}}                 _ _
+     '\\//'  @@()@@  _ )    (    ~Y~       @@@@     _{ ' }_
+       ||     @@@@ _(_)_   wWWWw .oOOo.   @@()@@   { `.!.` }
+       ||     ,/  (_)@(_)  (___) OO()OO    @@@@  _ ',_/Y\_,'
+       ||  ,\ | /)  (_)\     Y   'OOOO',,,(\\|/ _(_)_ {_,_}
+   |\  ||  |\\|// vVVVv`|/@@@@    _ \/{{}}}\\| (_)@(_)  |  ,,,
+   | | ||  | |;,,,(___) |@@()@@ _(_)_| ~Y~ wWWWw(_)\ (\| {{{}}}
+   | | || / / {{}}} Y  \| @@@@ (_)#(_) \|  (___)   |  \| /~Y~
+    \ \||/ /\\|~Y~ \|/  | \ \/  /(_) |/ |/   Y    \|/  |//\|/
+jgs\ `\\//',.\\|/|//.|/\\|/\\|,\\|/ //\\|/\\|.\\\\| // \\|\\ |/,\\|/
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+The match will be embedded inside the scene, contextually placed so that the surrounding
+visual acts as framing rather than noise. The goal is output that you *notice* — output
+that creates a small moment of pause between you and the file you are searching through.
+Whether that moment is useful is an empirical question. The author believes it is.
 
 ## ASCII Art Attribution
 
@@ -251,9 +288,13 @@ Modifications made for use in `catsay`:
   No affiliation with any specific orange cartoon cat, Monday-hating or otherwise,
   is implied, intended, or legally defensible.
 
-If you are the original author and would prefer a different form of attribution,
-or no attribution at all, please open an issue or contact the maintainer directly.
-This will be addressed promptly.
+The Spring Garden scene used in the `grepfield` FAQ above is attributed to `jgs` and
+sourced from [asciiart.eu](https://www.asciiart.eu/art/d9c8fc04295a9c29).
+It is reproduced here for illustrative purposes under the same attribution convention.
+
+If you are the original author of either work and would prefer a different form of
+attribution, or no attribution at all, please open an issue or contact the maintainer
+directly. This will be addressed promptly.
 
 ## License
 

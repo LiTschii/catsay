@@ -59,8 +59,27 @@ if [ -n "$LATEST" ]; then
 fi
 
 # --- fallback: build from source with Go ---
-echo "No prebuilt binary found. Trying to build from source..."
-command -v go >/dev/null 2>&1 || die "Go is not installed and no prebuilt binary is available.\nInstall Go from https://go.dev/dl/ and re-run, or download a binary from:\nhttps://github.com/${REPO}/releases"
+echo "No prebuilt binary found. Falling back to building from source..."
+
+if ! command -v go >/dev/null 2>&1; then
+  echo "Go is not installed."
+  printf "Install Go now? (Y/n) "
+  read -r REPLY </dev/tty
+  case "$REPLY" in
+    [nN]*) die "Aborting. Install Go from https://go.dev/dl/ or wait for a prebuilt release at https://github.com/${REPO}/releases" ;;
+  esac
+
+  echo "Installing Go via the official installer..."
+  GOTMP=$(mktemp -d)
+  trap 'rm -rf "$GOTMP"' EXIT
+  GO_VERSION="1.22.3"
+  GO_ARCH="$ARCH"
+  GO_TARBALL="go${GO_VERSION}.${OS}-${GO_ARCH}.tar.gz"
+  fetch "https://go.dev/dl/${GO_TARBALL}" "${GOTMP}/${GO_TARBALL}"
+  $SUDO tar -C /usr/local -xzf "${GOTMP}/${GO_TARBALL}"
+  export PATH="$PATH:/usr/local/go/bin"
+  echo "Go installed to /usr/local/go"
+fi
 
 BUILDTMP=$(mktemp -d)
 trap 'rm -rf "$BUILDTMP"' EXIT

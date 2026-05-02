@@ -1,0 +1,25 @@
+{
+  "name": "catsay",
+  "version": "1.0.0",
+  "description": "Like cowsay, but it's a cat — and it reads files directly, like cat",
+  "bin": {
+    "catsay": "./bin/catsay.js"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "files": [
+    "bin/",
+    "install.js"
+  ],
+  "keywords": ["cat", "cowsay", "catsay", "cli", "terminal"],
+  "author": "LiTLiTschi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LiTLiTschi/catsay"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -3,8 +3,8 @@
 
 $ErrorActionPreference = 'Stop'
 
-$Repo   = 'LiTLiTschi/catsay'
-$Bin    = 'catsay.exe'
+$Repo = 'LiTLiTschi/catsay'
+$Bin  = 'catsay.exe'
 
 # detect arch
 $Arch = if ([System.Environment]::Is64BitOperatingSystem) {
@@ -13,9 +13,9 @@ $Arch = if ([System.Environment]::Is64BitOperatingSystem) {
   Write-Error 'Only 64-bit Windows is supported.'; exit 1
 }
 
-$Suffix = "windows-$Arch.exe"
+$AssetName = "catsay-windows-$Arch.exe"
 
-# resolve install dir — prefer a dir already on PATH, else create one
+# resolve install dir
 $InstallDir = "$env:LOCALAPPDATA\Programs\catsay"
 if (-not (Test-Path $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir | Out-Null }
 
@@ -27,7 +27,7 @@ if ($UserPath -notlike "*$InstallDir*") {
   Write-Host "Added $InstallDir to PATH."
 }
 
-# get latest release tag
+# get latest release
 $Release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
 $Tag     = $Release.tag_name
 
@@ -36,12 +36,25 @@ if (-not $Tag) {
   exit 1
 }
 
-$Url  = "https://github.com/$Repo/releases/download/$Tag/catsay-$Suffix"
-$Dest = Join-Path $InstallDir $Bin
+# check if the windows binary asset exists in this release
+$Asset = $Release.assets | Where-Object { $_.name -eq $AssetName } | Select-Object -First 1
 
-Write-Host "Downloading catsay $Tag ($Arch)..."
-Invoke-WebRequest -Uri $Url -OutFile $Dest -UseBasicParsing
+if ($Asset) {
+  $Url  = $Asset.browser_download_url
+  $Dest = Join-Path $InstallDir $Bin
+  Write-Host "Downloading catsay $Tag ($Arch)..."
+  Invoke-WebRequest -Uri $Url -OutFile $Dest -UseBasicParsing
+  Write-Host "Installed -> $Dest"
+} else {
+  Write-Host "No prebuilt binary found for $Tag ($Arch). Falling back to go install..."
+  if (-not (Get-Command go -ErrorAction SilentlyContinue)) {
+    Write-Error "Go is not installed. Install it from https://go.dev/dl/ and re-run this script, or download catsay manually from https://github.com/$Repo/releases"
+    exit 1
+  }
+  $env:GOBIN = $InstallDir
+  go install "github.com/$Repo@latest"
+  Write-Host "Installed -> $InstallDir\$Bin"
+}
 
-Write-Host "Installed -> $Dest"
 Write-Host "Run: catsay <file>"
 Write-Host "(You may need to restart your terminal for PATH to take effect.)"

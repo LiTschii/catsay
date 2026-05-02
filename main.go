@@ -9,32 +9,46 @@ import (
 	"unicode/utf8"
 )
 
-// buildCat generates the ASCII cat widened by fatness (horizontal only).
-// fat=1 is default. Each extra unit adds 2 chars of girth to the body width.
+// buildCat generates the ASCII cat widened by fatness factor.
+// fat=1 is default. Each extra unit adds 2 chars of girth.
+//
+// Geometry (g = (fat-1)*2):
+//   head underscores : 5 + g
+//   eye gap          : 3 + g  spaces between the two eyes
+//   nose half-pad    : 2 + g/2  spaces between == and ^
+//   body gap         : 9 + g  /  11 + g
+//   paw gap          : 3 + g  spaces between (__) groups
+//   feet underscores : 3 + g  middle underscores
 func buildCat(fat int) string {
 	if fat < 1 {
 		fat = 1
 	}
-	p := strings.Repeat(" ", (fat-1)*2) // space padding between body halves
-	u := strings.Repeat("_", (fat-1)*2) // underscore padding for feet row
-	h := strings.Repeat("_", 5+(fat-1)*2) // underscores for head/ears row
+	g := (fat - 1) * 2
+
+	headU := strings.Repeat("_", 5+g)
+	eyeGap := strings.Repeat(" ", 3+g)
+	noseHalf := strings.Repeat(" ", 2+g/2)
+	body1 := strings.Repeat(" ", 9+g)
+	body2 := strings.Repeat(" ", 11+g)
+	pawGap := strings.Repeat(" ", 3+g)
+	feetU := strings.Repeat("_", 3+g)
 
 	return fmt.Sprintf(
 		"\n"+
 			"    /\\%s/\\\n"+
-			"   /  o%s   o  \\\n"+
-			"  ( ==%s  ^  ==%s )\n"+
-			"   )%s         %s(\n"+
-			"  (%s           %s)\n"+
-			" ( (__)%s   %s(__) )\n"+
-			"(__(__)%s___%s(__)__)\n",
-		h,
-		p,
-		p, p,
-		p, p,
-		p, p,
-		p, p,
-		u, u,
+			"   /  o%so  \\\n"+
+			"  ( ==%s^%s== )\n"+
+			"   )%s(\n"+
+			"  (%s)\n"+
+			" ( (__)%s(__) )\n"+
+			"(__(__)%s(__)__)\n",
+		headU,
+		eyeGap,
+		noseHalf, noseHalf,
+		body1,
+		body2,
+		pawGap,
+		feetU,
 	)
 }
 

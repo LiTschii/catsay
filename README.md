@@ -17,25 +17,30 @@
 (__(__)___(__)__)
 ```
 
-## Why?
-
-`cowsay` needs its text piped in. `cat` reads files directly. `catsay` fuses both:
-you give it a file (or a few), it reads them and has the cat say the contents.
-
 ## Install
 
-```bash
-# From source (requires Go 1.21+)
-git clone https://github.com/LiTLiTschi/catsay
-cd catsay
-go build -o catsay .
-sudo mv catsay /usr/local/bin/
+### One-liner (Linux & macOS)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/LiTLiTschi/catsay/main/install.sh | sh
 ```
 
-Or with `go install`:
+No dependencies required — just `curl`. Downloads a fully static binary for your arch (`amd64` or `arm64`).
+Installs to `/usr/local/bin/catsay`, or `~/.local/bin/catsay` if you don't have sudo.
+
+### go install (if you have Go)
 
 ```bash
 go install github.com/LiTLiTschi/catsay@latest
+```
+
+### From source
+
+```bash
+git clone https://github.com/LiTLiTschi/catsay
+cd catsay
+CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -o catsay .
+sudo mv catsay /usr/local/bin/
 ```
 
 ## Usage
@@ -55,6 +60,13 @@ cat somefile | catsay
 catsay
 ```
 
+## Why?
+
+`cowsay` needs its text piped in. `cat` reads files directly. `catsay` fuses both:
+you give it a file (or a few), it reads them and has the cat say the contents.
+
+The binary is fully static — no libc, no runtime, no nothing. Drop it anywhere and it runs.
+
 ## How it differs from cowsay
 
 | | `cowsay` | `catsay` |
@@ -62,12 +74,8 @@ catsay
 | Animal | 🐄 Cow | 🐱 Cat |
 | Input | stdin only | **file args** + stdin fallback |
 | Multiple files | ❌ | ✅ concatenated |
-| Install | needs package manager | single Go binary |
-
-## Long lines
-
-Lines longer than 60 characters are automatically wrapped. Multi-line content
-gets the classic cowsay-style `/ ... \` border corners; single-line gets `< ... >`.
+| Dependencies | Perl | **none** |
+| Install | package manager | `curl \| sh` or single binary |
 
 ## License
 

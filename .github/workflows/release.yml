@@ -36,12 +36,13 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Build
+      - name: Build (fully static)
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: '0'
         run: |
-          go build -ldflags="-s -w" -o catsay-${{ matrix.suffix }} .
+          go build -ldflags="-s -w -extldflags '-static'" -trimpath -o catsay-${{ matrix.suffix }} .
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2

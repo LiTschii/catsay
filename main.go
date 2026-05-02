@@ -4,19 +4,40 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
 
-const catAscii = `
+// buildCat generates the ASCII cat scaled by fatness.
+// fatness=1 is default. Each extra unit repeats the belly rows
+// vertically and widens the body horizontally.
+func buildCat(fat int) string {
+	if fat < 1 {
+		fat = 1
+	}
+
+	// horizontal padding added to body lines (spaces inside the sides)
+	hpad := strings.Repeat(" ", (fat-1)*2)
+	// extra belly rows repeated vertically
+	belly := strings.Repeat("  ( "+hpad+"          "+hpad+" )\n", fat-1)
+
+	return fmt.Sprintf(`
     /\_____/\
-   /  o   o  \
-  ( ==  ^  == )
-   )         (
-  (           )
- ( (  )   (  ) )
+   /  o%s   o  \
+  ( ==%s  ^  ==%s )
+   )%s         %s(
+%s  (  %s         %s  )
+ ( ( %s )   ( %s ) )
 (__(__)___(__)__)
-`
+`,
+		hpad, hpad, hpad,
+		hpad, hpad,
+		belly,
+		hpad, hpad,
+		hpad, hpad,
+	)
+}
 
 func wrapLines(lines []string, maxWidth int) []string {
 	var result []string
@@ -59,18 +80,21 @@ func buildBubble(lines []string) string {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "Usage: catsay [-s|--string \"text\"] [file ...]")
+	fmt.Fprintln(os.Stderr, "Usage: catsay [-s|--string \"text\"] [-f|--fat N] [file ...]")
 	fmt.Fprintln(os.Stderr, "       echo text | catsay")
+	fmt.Fprintln(os.Stderr, "")
+	fmt.Fprintln(os.Stderr, "  -s, --string  say a string directly")
+	fmt.Fprintln(os.Stderr, "  -f, --fat N   scale cat fatness (default: 1)")
 	os.Exit(1)
 }
 
 func main() {
 	var lines []string
 	wrap := 60
+	fat := 1
 
 	args := os.Args[1:]
 
-	// parse flags
 	var fileArgs []string
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
@@ -81,6 +105,18 @@ func main() {
 			}
 			i++
 			lines = append(lines, strings.Split(args[i], "\n")...)
+		case "-f", "--fat":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "catsay: -f requires a number")
+				usage()
+			}
+			i++
+			n, err := strconv.Atoi(args[i])
+			if err != nil || n < 1 {
+				fmt.Fprintln(os.Stderr, "catsay: -f requires a positive integer")
+				usage()
+			}
+			fat = n
 		case "-h", "--help":
 			usage()
 		default:
@@ -88,7 +124,6 @@ func main() {
 		}
 	}
 
-	// read files if any were given
 	for _, arg := range fileArgs {
 		f, err := os.Open(arg)
 		if err != nil {
@@ -102,12 +137,10 @@ func main() {
 		f.Close()
 	}
 
-	// no args at all: print usage (don't block on stdin)
 	if len(os.Args) == 1 {
 		usage()
 	}
 
-	// no content from flags/files but stdin was piped
 	if len(lines) == 0 && len(fileArgs) == 0 {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
@@ -121,5 +154,5 @@ func main() {
 
 	lines = wrapLines(lines, wrap)
 	fmt.Print(buildBubble(lines))
-	fmt.Print(catAscii)
+	fmt.Print(buildCat(fat))
 }

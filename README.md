@@ -77,18 +77,58 @@ source ~/.bashrc   # or source ~/.zshrc
 ## Usage
 
 ```bash
-# Read a file directly (the point of this tool)
+# Read a file directly
 catsay README.md
 
 # Multiple files — concatenated like real cat
 catsay file1.txt file2.txt
 
+# Pass a string directly
+catsay -s "hello world"
+
 # Stdin fallback (pipe still works)
 echo "meow" | catsay
-cat somefile | catsay
 
 # Empty? Cat says ...
 catsay
+```
+
+## Flags
+
+### `-s`, `--string`
+
+Passes a string directly as the cat's message, without needing a file or a pipe.
+Useful when you want to quickly surface a value, a variable, or a short note in your
+terminal output without creating a temporary file or a subshell.
+
+```bash
+catsay -s "build succeeded"
+catsay -s "$MY_ENV_VAR"
+```
+
+### `-f`, `--fat N`
+
+Scales the cat's body width by `N`. Default is `1`.
+
+The horizontal scale factor directly controls the girth of the rendered cat.
+This is particularly useful in wide terminal environments where the default
+cat renders as visually undersized relative to the speech bubble — a mismatch
+that can make the output harder to parse at a glance. A value of `2` or `3`
+produces a more proportional result on terminals wider than 120 columns.
+
+```bash
+catsay -s "i am normal"          # default
+catsay -s "i had too much food" -f 3
+```
+
+```
+    /\_____/\                       /\_________/\
+   /  o   o  \                     /  o     o  \
+  ( ==  ^  == )     -f 3 ->       ( ==    ^    == )
+   )         (                     )             (
+  (           )                   (               )
+ ( (  )   (  ) )                 ( (   )   (   ) )
+(__(__)___(__)__)               (__(__)___(__)__)
 ```
 
 ## Why?

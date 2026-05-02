@@ -9,33 +9,28 @@ import (
 	"unicode/utf8"
 )
 
-// buildCat generates the ASCII cat scaled by fatness.
-// fatness=1 is default. Each extra unit repeats the belly rows
-// vertically and widens the body horizontally.
+// buildCat generates the ASCII cat widened by fatness (horizontal only).
+// fat=1 is default. Each extra unit adds 2 spaces of girth inside the body.
 func buildCat(fat int) string {
 	if fat < 1 {
 		fat = 1
 	}
+	p := strings.Repeat(" ", (fat-1)*2) // padding per side
 
-	// horizontal padding added to body lines (spaces inside the sides)
-	hpad := strings.Repeat(" ", (fat-1)*2)
-	// extra belly rows repeated vertically
-	belly := strings.Repeat("  ( "+hpad+"          "+hpad+" )\n", fat-1)
-
-	return fmt.Sprintf(`
-    /\_____/\
-   /  o%s   o  \
-  ( ==%s  ^  ==%s )
-   )%s         %s(
-%s  (  %s         %s  )
- ( ( %s )   ( %s ) )
-(__(__)___(__)__)
-`,
-		hpad, hpad, hpad,
-		hpad, hpad,
-		belly,
-		hpad, hpad,
-		hpad, hpad,
+	return fmt.Sprintf(
+		"\n"+
+			"    /\\_____/\\\n"+
+			"   /  o%s   o  \\\n"+
+			"  ( ==%s  ^  ==%s )\n"+
+			"   )%s         %s(\n"+
+			"  (%s           %s)\n"+
+			" ( (%s )   ( %s) )\n"+
+			"(__(__)___(__)__)\n",
+		p,
+		p, p,
+		p, p,
+		p, p,
+		p, p,
 	)
 }
 
@@ -84,7 +79,7 @@ func usage() {
 	fmt.Fprintln(os.Stderr, "       echo text | catsay")
 	fmt.Fprintln(os.Stderr, "")
 	fmt.Fprintln(os.Stderr, "  -s, --string  say a string directly")
-	fmt.Fprintln(os.Stderr, "  -f, --fat N   scale cat fatness (default: 1)")
+	fmt.Fprintln(os.Stderr, "  -f, --fat N   scale cat width (default: 1)")
 	os.Exit(1)
 }
 

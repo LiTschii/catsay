@@ -179,6 +179,10 @@ func main() {
 	}
 
 	wrap := termWidth() - 4
+	// Cap the wrap width to prevent excessively wide borders in some terminal environments
+	if wrap > 120 {
+		wrap = 120
+	}
 	if wrap < 20 {
 		wrap = 20
 	}

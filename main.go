@@ -54,6 +54,16 @@ func expandTabs(s string) string {
 }
 
 // buildCat generates the ASCII cat widened by fatness factor.
+// fat=1 is default. Each extra unit adds 2 chars of girth.
+//
+// Geometry (g = (fat-1)*2):
+//
+//	head underscores : 5 + g
+//	eye gap          : 3 + g  spaces between the two eyes
+//	nose half-pad    : 2 + g/2  spaces between == and ^
+//	body gap         : 9 + g  /  11 + g
+//	paw inner gap    : 3 + g  spaces between (  ) groups
+//	feet underscores : 3 + g  middle underscores
 func buildCat(fat int) string {
 	if fat < 1 {
 		fat = 1
@@ -75,7 +85,7 @@ func buildCat(fat int) string {
 			"  ( ==%s^%s== )\n"+
 			"   )%s(\n"+
 			"  (%s)\n"+
-			" ( (__)%s(__) )\n"+
+			" ( (  )%s(  ) )\n"+
 			"(__(__)%s(__)__)\n",
 		headU,
 		eyeGap,

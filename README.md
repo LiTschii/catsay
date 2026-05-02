@@ -13,7 +13,7 @@
   ( ==  ^  == )
    )         (
   (           )
- ( (  )   (  ) )
+ ( (__)   (__) )
 (__(__)___(__)__)
 ```
 
@@ -127,7 +127,7 @@ catsay -s "i had too much food" -f 3
   ( ==  ^  == )     -f 3 ->       ( ==    ^    == )
    )         (                     )             (
   (           )                   (               )
- ( (  )   (  ) )                 ( (   )   (   ) )
+ ( (__)   (__) )                 ( (__)     (__) )
 (__(__)___(__)__)               (__(__)___(__)__)
 ```
 
@@ -197,6 +197,26 @@ in order to distance it from any specific cultural reference are welcome via Git
 issues, but should be accompanied by a concrete ASCII art alternative that still
 reads unambiguously as a cat at default terminal font sizes. This is harder than it
 sounds.
+
+## ASCII Art Attribution
+
+The cat figure rendered by `catsay` is derived from an original ASCII art work
+published on [asciiart.eu](https://www.asciiart.eu/art/918346b180e39896).
+The original is reproduced here in modified form under the convention that ASCII
+art consisting solely of printable characters does not attract copyright protection
+in most jurisdictions, and that attribution is the appropriate and customary form
+of acknowledgment in the ASCII art community regardless of formal legal requirement.
+
+Modifications made for use in `catsay`:
+- Body proportions adjusted for legibility at small terminal font sizes
+- Paw and feet rows realigned to maintain structural coherence across the full
+  character grid
+- A horizontal scaling parameter (`-f`) was introduced; the base geometry of the
+  original is preserved at the default scale of `1`
+
+If you are the original author and would prefer a different form of attribution,
+or no attribution at all, please open an issue or contact the maintainer directly.
+This will be addressed promptly.
 
 ## License
 
